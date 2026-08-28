@@ -1,0 +1,102 @@
+# Reliability Judge Configuration
+# Configurable thresholds and rules for TRUST/REVIEW/ABSTAIN decisions
+
+# Confidence thresholds
+confidence:
+  high_threshold: 0.85          # Confidence above this is considered "high"
+  medium_threshold: 0.60        # Confidence between medium and high
+  low_threshold: 0.40           # Below this is "low" confidence
+
+# Uncertainty thresholds
+uncertainty:
+  low_threshold: 0.30           # Normalized entropy - low uncertainty
+  medium_threshold: 0.60        # Medium uncertainty
+  high_threshold: 0.80          # High uncertainty
+
+# Robustness thresholds
+robustness:
+  acceptable_flip_rate: 0.10    # Max rate of prediction flips under perturbation
+  acceptable_confidence_delta: 0.15  # Max confidence change allowed
+
+# Explanation agreement thresholds
+explanation:
+  good_agreement_threshold: 0.40     # Cosine similarity above this is good
+  acceptable_agreement_threshold: 0.25  # Below 0.25 is concerning
+  metrics:
+    - cosine_similarity
+    - pearson_correlation
+    - overlap_iou
+
+# Decision rules
+decision_rules:
+  trust:
+    description: "Prediction is reliable - recommend deployment"
+    conditions:
+      - confidence >= 0.85 AND
+      - normalized_entropy <= 0.30 AND
+      - flip_rate <= 0.10 AND
+      - max_confidence_delta <= 0.15 AND
+      - explanation_agreement >= 0.40
+    score_threshold: 0.75
+
+  review:
+    description: "Prediction requires expert review"
+    conditions:
+      - (high_uncertainty OR low_confidence) AND
+      - NOT critical_failure_detected
+    score_threshold: 0.50
+
+  abstain:
+    description: "System cannot reliably assess this case"
+    conditions:
+      - critical_failure_detected OR
+      - score < 0.50 OR
+      - incomplete_evidence
+    score_threshold: 0
+
+# Scoring system (4-component scoring)
+scoring:
+  components:
+    confidence_score: 0.25    # Weight for high confidence
+    uncertainty_score: 0.25   # Weight for low uncertainty
+    robustness_score: 0.25    # Weight for stable predictions
+    explanation_score: 0.25   # Weight for explanation agreement
+  
+  total_weight: 1.0           # Should sum to 1.0
+  scaling_factor: 1.0         # Adjust sensitivity of scoring
+
+# Critical failure detection
+failure_detection:
+  prediction_flips_critical: 5  # Number of flips that triggers abstain
+  confidence_delta_critical: 0.50  # Confidence drop that triggers abstain
+  explanation_agreement_critical: 0.15  # Low agreement threshold
+  missing_evidence_critical: true  # Abstain if evidence unavailable
+
+# Special cases
+special_cases:
+  edge_case_confidence_range:
+    min: 0.30
+    max: 0.70
+    action: "recommend_review"  # Always recommend review for edge cases
+  
+  very_high_confidence:
+    threshold: 0.95
+    check_uncertainty: true  # Always verify uncertainty, even if confident
+  
+  high_entropy_timeout:
+    threshold: 0.90
+    max_latency_ms: 5000  # Timeout if analysis takes too long
+
+# Logging and traceability
+logging:
+  log_threshold_violations: true
+  log_triggered_rules: true
+  log_confidence_changes: true
+  verbosity: "verbose"  # "quiet", "normal", "verbose"
+
+# Metadata
+metadata:
+  version: "1.0"
+  created: "2026-08-27"
+  description: "Reliability judge configuration for MEDAI BLACK BOX"
+  tuning_status: "research_baseline"  # For deployment, set to "production"

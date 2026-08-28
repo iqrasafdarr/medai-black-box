@@ -1,0 +1,17 @@
+{
+  "case_001_robust.png": {
+    "type": "high_confidence_robust",
+    "name": "High Confidence, Robust Prediction",
+    "description": "A clear case where the model is confident and stable under perturbation"
+  },
+  "case_002_uncertain.png": {
+    "type": "high_confidence_uncertain",
+    "name": "High Confidence, Uncertain Prediction",
+    "description": "High confidence but uncertain under perturbation testing"
+  },
+  "case_003_ambiguous.png": {
+    "type": "low_confidence",
+    "name": "Low Confidence Edge Case",
+    "description": "Borderline case with competing predictions"
+  }
+}
