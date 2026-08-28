@@ -2,633 +2,1102 @@
 
 ## Interactive Forensic Laboratory for Auditing Medical AI
 
-**"Can you trust this AI prediction?"**
+**Can you trust this AI prediction?**
 
-MEDAI BLACK BOX is a research-focused interactive system for investigating how medical AI behaves, where it fails, and when it should abstain from making predictions. Instead of simply displaying a prediction, the system conducts a forensic investigation across multiple explainability, robustness, and uncertainty analysis modules.
+MEDAI BLACK BOX is a research-focused interactive system for investigating how medical AI behaves, where it fails, and when it should abstain from making a prediction.
 
----
+Rather than displaying only a prediction and confidence score, MEDAI BLACK BOX performs a structured forensic investigation using **explainability, robustness, uncertainty, failure analysis, and deterministic reliability assessment**.
 
-## Project Overview
-
-### Problem Statement
-
-Current medical AI systems present predictions with confidence scores, but:
-- **High confidence ≠ High reliability**
-- Models can be wrong with high confidence
-- Failures often go undetected until deployment
-- No systematic mechanism to determine when AI should abstain
-
-### Solution
-
-MEDAI BLACK BOX provides a comprehensive AI auditing framework that:
-1. Analyzes visual evidence through explainability methods
-2. Tests robustness through controlled perturbations
-3. Quantifies uncertainty
-4. Detects failure modes
-5. Produces deterministic TRUST/REVIEW/ABSTAIN verdicts
+> **Research prototype — not intended for clinical diagnosis or patient-care decisions.**
 
 ---
 
-## Core Architecture
+## Screenshots
 
-### Investigation Pipeline
+### Landing Page
 
-```
-CASE (Medical Image)
-    ↓
+Upload a brain MRI image and start an AI investigation.
+
+![MEDAI BLACK BOX Landing Page](assets/screenshots/screenshot-landing.png)
+
+### Live Investigation
+
+Monitor the investigation as the forensic pipeline executes.
+
+![MEDAI BLACK BOX Investigation Running](assets/screenshots/screenshot-running.png)
+
+### Investigation Graph
+
+Inspect the status and execution of individual investigation components.
+
+![MEDAI BLACK BOX Investigation Graph](assets/screenshots/screenshot-investigation.png)
+
+### Evidence Timeline
+
+Review how confidence, reliability, evidence, and investigation findings contribute to the final verdict.
+
+![MEDAI BLACK BOX Evidence Timeline](assets/screenshots/screenshot-evidence-timeline.png)
+
+---
+
+# Project Overview
+
+## Problem
+
+Medical AI systems commonly expose predictions and confidence scores, but confidence alone does not establish reliability.
+
+A model may:
+
+* Make an incorrect prediction with high confidence
+* Rely on unstable or irrelevant visual evidence
+* Change its prediction under small perturbations
+* Produce uncertain predictions near decision boundaries
+* Fail without providing a mechanism for human review or abstention
+
+MEDAI BLACK BOX addresses this problem by treating every prediction as an **auditable case** rather than a simple classification output.
+
+---
+
+# Solution
+
+MEDAI BLACK BOX conducts a structured investigation of each prediction:
+
+1. Generate the model prediction
+2. Analyze visual evidence
+3. Test prediction robustness
+4. Quantify uncertainty
+5. Detect potential failure modes
+6. Aggregate evidence
+7. Produce a deterministic reliability assessment
+8. Return a **TRUST / REVIEW / ABSTAIN** verdict
+
+The goal is not simply to answer:
+
+> **"What did the model predict?"**
+
+but also:
+
+> **"How much evidence do we have that this prediction is reliable?"**
+
+---
+
+# Core Architecture
+
+## Investigation Pipeline
+
+```text
+CASE
+(Medical Image)
+      │
+      ▼
 PREDICTION ENGINE
-    ↓
-VISION INVESTIGATOR (Grad-CAM, Integrated Gradients)
-    ↓
-ROBUSTNESS INVESTIGATOR (Perturbation Testing)
-    ↓
-UNCERTAINTY INVESTIGATOR (Entropy, Calibration)
-    ↓
-FAILURE ANALYZER (Pattern Detection)
-    ↓
-RELIABILITY JUDGE (Decision Engine)
-    ↓
-VERDICT: TRUST / REVIEW / ABSTAIN
+      │
+      ▼
+VISION INVESTIGATOR
+Grad-CAM + Integrated Gradients
+      │
+      ▼
+ROBUSTNESS INVESTIGATOR
+Perturbation Testing
+      │
+      ▼
+UNCERTAINTY INVESTIGATOR
+Entropy + Confidence Analysis
+      │
+      ▼
+FAILURE ANALYZER
+Failure Pattern Detection
+      │
+      ▼
+RELIABILITY JUDGE
+Deterministic Decision Engine
+      │
+      ▼
+TRUST / REVIEW / ABSTAIN
 ```
 
-### Key Features
+---
 
-#### 1. **AI Autopsy**
-Automated comprehensive investigation of every prediction:
-- ✓ Prediction generated
-- ✓ Visual evidence analyzed
-- ✓ Grad-CAM generated
-- ✓ Integrated Gradients generated
-- ✓ Perturbation tests completed
-- ✓ Uncertainty evaluated
-- ✓ Reliability assessed
+# Key Features
 
-#### 2. **Explainability Forensics**
-Multiple explainability methods with agreement analysis:
-- **Grad-CAM**: Class Activation Maps for visual localization
-- **Integrated Gradients**: Model-agnostic feature attribution
-- **Explanation Overlap**: Quantified agreement between methods
+## 1. AI Autopsy
 
-#### 3. **Attack This Prediction**
-Controlled computational stress testing:
-- Brightness variations
-- Contrast adjustments
-- Gaussian noise injection
-- Blur application
-- Image rotation
-- Region occlusion
+MEDAI BLACK BOX performs an automated forensic investigation of a model prediction.
 
-Results ranked by sensitivity to reveal failure modes.
+The investigation can include:
 
-#### 4. **Robustness Analysis**
-- Perturbation sensitivity analysis
-- Confidence stability assessment
-- Prediction flip rates
-- Failure mode identification
-
-#### 5. **Uncertainty Quantification**
-Multiple uncertainty estimates:
-- Predictive entropy
-- Softmax confidence gaps
-- Calibration uncertainty
-- Top-2 class separation
-
-#### 6. **Trust ≠ Confidence**
-Central conceptual contribution:
-- **Model Confidence**: What the model claims (softmax probability)
-- **Model Reliability**: Evidence-based trustworthiness
-- Computed from: calibration + uncertainty + robustness + explanation agreement
-
-#### 7. **Reliability Judge**
-Deterministic decision engine:
-- **TRUST**: High confidence + low uncertainty + stable + explainable
-- **REVIEW**: Mixed signals, requires expert review
-- **ABSTAIN**: Insufficient confidence or conflicting evidence
-
-#### 8. **Deterministic Investigation Agents**
-Separate Python modules with clear interfaces:
-- **Vision Investigator**: Visual evidence analysis
-- **Robustness Investigator**: Perturbation testing  
-- **Uncertainty Investigator**: Uncertainty estimation
-- **Failure Analyzer**: Pattern detection
-- **Reliability Judge**: Decision logic
-
-#### 9. **Agent Flight Recorder**
-Execution observability:
-- Agent name and status
-- Start/end time and latency
-- Input/output summaries
-- Error tracking
-- Connected to AI agent reliability research
-
-#### 10. **Evidence Timeline**
-Visual flow of analysis through investigation stages with confidence/reliability changes
-
-#### 11. **Investigation Graph**
-Interactive React Flow visualization:
-- Node-based investigation pipeline
-- Real-time status updates
-- Click to reveal evidence
-
-#### 12. **Research vs. Demo Mode**
-- **Demo Mode**: Beautiful, simple, guided interface
-- **Research Mode**: Raw metrics, full transparency, all data
-
-#### 13. **Counterfactual Lab**
-Modify evidence and rerun analysis:
-- Mask regions
-- Add noise  
-- Adjust brightness
-- Observe verdict changes
-
-#### 14. **Break the AI**
-Controlled failure injection:
-- Disable agents
-- Remove evidence sources
-- Simulate timeouts
-- Observe graceful degradation
+* Prediction generation
+* Visual evidence analysis
+* Grad-CAM
+* Integrated Gradients
+* Explanation agreement
+* Perturbation testing
+* Uncertainty estimation
+* Failure-mode analysis
+* Reliability scoring
+* Final verdict generation
 
 ---
 
-## Technical Stack
+## 2. Explainability Forensics
 
-### Backend
-- **Python 3.12**
-- **FastAPI**: Modern async web framework
-- **PyTorch**: Deep learning inference
-- **torchvision**: Computer vision models
-- **NumPy/SciPy**: Scientific computing
-- **scikit-learn**: ML utilities
-- **OpenCV**: Image processing
+Multiple attribution methods are used to inspect the evidence supporting a prediction.
 
-### Frontend
-- **Next.js 14**: React framework with server components
-- **TypeScript**: Type-safe development
-- **Tailwind CSS**: Utility-first styling
-- **Framer Motion**: Animations and transitions
-- **React Flow**: Graph visualization
-- **Recharts**: Data visualization
-- **Lucide React**: Icon library
-- **Axios**: HTTP client
+### Grad-CAM
 
-### Model
-- **ResNet18**: Brain tumor classification backbone
-- **4-class output**: No Tumor, Glioma, Meningioma, Pituitary
-- **No external LLM dependencies**
+Generates class-specific activation maps to identify image regions contributing to the model's prediction.
+
+### Integrated Gradients
+
+Provides feature attribution by integrating gradients along a path from a baseline input to the observed image.
+
+### Explanation Agreement
+
+The system can compare explanations using quantitative similarity measures such as:
+
+* Cosine similarity
+* Intersection-over-Union (IoU)
+* Activated-region overlap
+
+The objective is to determine whether different explanation methods provide consistent evidence.
 
 ---
 
-## Installation & Setup
+## 3. Attack This Prediction
 
-### Prerequisites
-- Python 3.10+
-- Node.js 18+
-- npm or yarn
+MEDAI BLACK BOX performs controlled computational stress testing through image perturbations.
 
-### Backend Setup
+Supported perturbation categories include:
+
+* Brightness changes
+* Contrast changes
+* Gaussian noise
+* Blur
+* Rotation
+* Region occlusion
+
+Each perturbation is evaluated for its effect on:
+
+* Predicted class
+* Confidence
+* Prediction stability
+* Sensitivity
+
+This allows potentially fragile predictions to be identified.
+
+---
+
+## 4. Robustness Analysis
+
+The robustness investigator measures how stable a prediction remains under controlled changes to the input.
+
+Key measurements include:
+
+* Prediction flips
+* Confidence changes
+* Perturbation sensitivity
+* Stability across transformations
+* Most influential perturbation
+
+A prediction that changes substantially under small input modifications may warrant additional review.
+
+---
+
+## 5. Uncertainty Quantification
+
+The system analyzes model uncertainty using model-output statistics including:
+
+* Predictive entropy
+* Normalized entropy
+* Top-class confidence
+* Top-2 confidence gap
+* Decision margin
+
+These measurements provide additional information beyond the raw prediction confidence.
+
+---
+
+## 6. Trust ≠ Confidence
+
+A central design principle of MEDAI BLACK BOX is:
+
+> **Model confidence is not the same as model reliability.**
+
+### Model Confidence
+
+Represents what the model claims through its output probabilities.
+
+### Model Reliability
+
+Represents the strength and consistency of evidence supporting that prediction.
+
+Reliability assessment considers multiple signals, including:
+
+* Confidence
+* Uncertainty
+* Robustness
+* Explanation agreement
+* Detected failure modes
+
+---
+
+## 7. Reliability Judge
+
+The Reliability Judge converts investigation evidence into a deterministic verdict.
+
+### TRUST
+
+The available evidence is sufficiently consistent and stable under the configured rules.
+
+### REVIEW
+
+The evidence is mixed or contains warning signals requiring human review.
+
+### ABSTAIN
+
+The system determines that the available evidence is insufficient for a reliable automated assessment.
+
+The verdict is generated through explicit decision rules rather than an external LLM.
+
+---
+
+## 8. Deterministic Investigation Agents
+
+The system separates the investigation into specialized modules:
+
+| Investigator             | Responsibility                      |
+| ------------------------ | ----------------------------------- |
+| Vision Investigator      | Explainability and visual evidence  |
+| Robustness Investigator  | Perturbation and stability analysis |
+| Uncertainty Investigator | Uncertainty estimation              |
+| Failure Analyzer         | Failure-pattern detection           |
+| Reliability Judge        | Final reliability assessment        |
+
+The architecture is intentionally deterministic and does not require an external LLM for the core investigation pipeline.
+
+---
+
+## 9. Agent Flight Recorder
+
+The Agent Flight Recorder provides execution observability.
+
+It records information such as:
+
+* Agent name
+* Execution status
+* Start and end timestamps
+* Latency
+* Input/output summaries
+* Error information
+
+This provides an audit trail for the investigation pipeline and connects the system conceptually to research on **AI agent reliability and observability**.
+
+---
+
+## 10. Evidence Timeline
+
+The Evidence Timeline provides a visual representation of how investigation evidence evolves across the pipeline.
+
+It can expose:
+
+* Prediction confidence
+* Reliability signals
+* Investigation stages
+* Detected concerns
+* Final assessment
+
+---
+
+## 11. Investigation Graph
+
+An interactive React Flow visualization represents the investigation pipeline as a graph.
+
+Features include:
+
+* Investigation nodes
+* Agent status
+* Pipeline progression
+* Evidence inspection
+* Execution state visualization
+
+---
+
+## 12. Research and Demo Modes
+
+### Demo Mode
+
+Designed for simple and guided exploration.
+
+### Research Mode
+
+Provides greater transparency through detailed metrics and investigation information.
+
+---
+
+## 13. Counterfactual Lab
+
+The Counterfactual Lab allows controlled modification of image evidence and re-analysis.
+
+Examples include:
+
+* Region masking
+* Noise injection
+* Brightness modification
+* Other controlled transformations
+
+The purpose is to observe how the model's computational behavior changes when the input is modified.
+
+> Counterfactual analysis in this system is descriptive rather than causal.
+
+---
+
+## 14. Break the AI
+
+The system supports controlled failure scenarios for reliability testing.
+
+Examples include:
+
+* Disabling investigation components
+* Removing evidence sources
+* Simulating failures
+* Testing degraded execution
+
+This helps evaluate whether the system can fail gracefully rather than silently producing misleading results.
+
+---
+
+# Technical Stack
+
+## Backend
+
+* **Python**
+* **FastAPI**
+* **PyTorch**
+* **torchvision**
+* **NumPy**
+* **SciPy**
+* **scikit-learn**
+* **OpenCV**
+
+## Frontend
+
+* **Next.js 14**
+* **React**
+* **TypeScript**
+* **Tailwind CSS**
+* **Framer Motion**
+* **React Flow**
+* **Recharts**
+* **Lucide React**
+* **Axios**
+
+## Model
+
+* **ResNet18**
+* Brain tumor classification
+* Four output classes:
+
+  * No Tumor
+  * Glioma
+  * Meningioma
+  * Pituitary
+
+The core investigation pipeline does not depend on an external LLM.
+
+---
+
+# Installation
+
+## Prerequisites
+
+* Python 3.10+
+* Node.js 18+
+* npm
+
+## Clone the Repository
 
 ```bash
+git clone https://github.com/iqrasafdarr/medai-black-box.git
 cd medai-black-box
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 
+## Backend Setup
+
+### Windows PowerShell
+
+```powershell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
 
-### Frontend Setup
+### Linux / macOS
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+---
+
+# Frontend Setup
 
 ```bash
 cd frontend
 npm install
 ```
 
-### Running the Application
+---
 
-**Terminal 1 - Backend (from project root):**
+# Running the Application
+
+## Terminal 1 — Backend
+
+From the project root:
+
+### Windows
+
+```powershell
+.\venv\Scripts\Activate.ps1
+python backend/main.py
+```
+
+### Linux / macOS
+
 ```bash
 source venv/bin/activate
 python backend/main.py
-# Server runs on http://localhost:8000
 ```
 
-**Terminal 2 - Frontend (from frontend directory):**
+The backend runs at:
+
+```text
+http://localhost:8000
+```
+
+---
+
+## Terminal 2 — Frontend
+
+From the `frontend` directory:
+
 ```bash
 npm run dev
-# Frontend runs on http://localhost:3000
 ```
 
-Open browser to `http://localhost:3000`
+The frontend runs at:
+
+```text
+http://localhost:3000
+```
+
+Open:
+
+```text
+http://localhost:3000
+```
 
 ---
 
-## Usage
+# Usage
 
-### 1. Upload Medical Image
-- Click upload area or drag-and-drop a brain MRI image
-- Supported formats: PNG, JPEG, BMP, TIFF
-- Recommended: 224x224px or larger
+## 1. Upload a Medical Image
 
-### 2. Automatic Investigation
-- System automatically runs AI Autopsy
-- All 6 investigation agents execute in parallel
-- Real-time progress via Agent Flight Recorder
+Upload or drag-and-drop a brain MRI image.
 
-### 3. Review Findings
-- **Overview Tab**: Verdict, evidence timeline, executive summary
-- **Explainability Tab**: Grad-CAM and Integrated Gradients
-- **Robustness Tab**: Perturbation results and failure modes
-- **Agents Tab**: Detailed execution logs
+Supported formats:
 
-### 4. Understand Verdict
-- **TRUST**: Deploy with confidence
-- **REVIEW**: Requires expert human review
-- **ABSTAIN**: System cannot reliably assess
-
-### 5. Explore Evidence
-- Click investigation graph nodes for detailed findings
-- View evidence timeline progression
-- Compare before/after in Counterfactual Lab
+* PNG
+* JPEG/JPG
+* BMP
+* TIFF
 
 ---
 
-## Investigation Agents
+## 2. Run the Investigation
 
-### Vision Investigator
-
-**Input:**
-- Original image
-- Model prediction
-- Optional lesion mask
-
-**Output:**
-- Grad-CAM heatmap
-- Integrated Gradients attribution
-- Explanation similarity metrics
-- Activated region analysis
-
-**Methodology:**
-- Generates class-specific activation maps
-- Computes gradient-weighted average pooling
-- Measures explanation agreement via cosine similarity and IoU
-
-### Robustness Investigator
-
-**Input:**
-- Original image
-- Model reference
-
-**Output:**
-- Perturbation suite results (20+ tests)
-- Prediction flip count
-- Confidence delta analysis
-- Most sensitive perturbation
-
-**Methodology:**
-- Tests 6 perturbation types with multiple parameters
-- Records prediction and confidence for each
-- Ranks by sensitivity magnitude
-
-### Uncertainty Investigator
-
-**Input:**
-- Original image
-- Model prediction
-
-**Output:**
-- Predictive entropy
-- Normalized entropy
-- Confidence gaps
-- Calibration uncertainty
-
-**Methodology:**
-- Computes softmax entropy
-- Measures gap between top two classes
-- Assesses margin vs. runner-up
-
-### Failure Analyzer
-
-**Input:**
-- Results from Vision, Robustness, Uncertainty agents
-
-**Output:**
-- Identified failure modes
-- Severity assessment
-- Contributing factors
-- Critical failure count
-
-**Methodology:**
-- Pattern matching across agent outputs
-- Severity scoring based on threshold violations
-- Aggregates evidence into failure taxonomy
-
-### Reliability Judge
-
-**Input:**
-- All agent results
-- Original prediction
-- Configuration thresholds
-
-**Output:**
-- TRUST / REVIEW / ABSTAIN verdict
-- Trust score (0-1)
-- Triggered rules
-- Evidence summary
-
-**Methodology:**
-- Scoring-based decision:
-  - High confidence (≥0.85): +0.25
-  - Low uncertainty (≤0.3): +0.25
-  - Stable predictions: +0.25
-  - Good explanation agreement (≥0.4): +0.25
-- Score mapping:
-  - ≥0.75: TRUST
-  - ≥0.5: REVIEW
-  - <0.5: ABSTAIN
+The system starts the forensic investigation pipeline and reports investigation progress through the interface.
 
 ---
 
-## Configuration
+## 3. Review Findings
 
-### Reliability Judge Thresholds
+### Overview
 
-File: `configs/reliability_judge.yaml` (future)
+Displays:
+
+* Final verdict
+* Reliability score
+* Evidence timeline
+* Executive summary
+
+### Explainability
+
+Displays:
+
+* Grad-CAM
+* Integrated Gradients
+* Explanation evidence
+
+### Robustness
+
+Displays:
+
+* Perturbation results
+* Confidence changes
+* Prediction stability
+* Failure indicators
+
+### Agents
+
+Displays:
+
+* Investigation status
+* Execution information
+* Agent-level results
+
+---
+
+# Investigation Agents
+
+## Vision Investigator
+
+### Input
+
+* Original image
+* Model prediction
+* Optional lesion mask
+
+### Output
+
+* Grad-CAM heatmap
+* Integrated Gradients attribution
+* Explanation similarity metrics
+* Activated-region analysis
+
+### Methodology
+
+The investigator generates class-specific attribution maps and compares the resulting evidence using quantitative similarity measures.
+
+---
+
+## Robustness Investigator
+
+### Input
+
+* Original image
+* Model reference
+
+### Output
+
+* Perturbation results
+* Prediction flip count
+* Confidence changes
+* Most sensitive perturbation
+
+### Methodology
+
+The investigator evaluates multiple controlled image transformations and records their effect on the model output.
+
+---
+
+## Uncertainty Investigator
+
+### Input
+
+* Original image
+* Model prediction
+
+### Output
+
+* Predictive entropy
+* Normalized entropy
+* Confidence gap
+* Decision margin
+
+### Methodology
+
+The investigator analyzes the model's output probability distribution to estimate uncertainty and separation between competing classes.
+
+---
+
+## Failure Analyzer
+
+### Input
+
+Results from:
+
+* Vision Investigator
+* Robustness Investigator
+* Uncertainty Investigator
+
+### Output
+
+* Potential failure modes
+* Severity indicators
+* Contributing factors
+* Critical failure count
+
+### Methodology
+
+Evidence from multiple investigation stages is aggregated and evaluated against configured rules.
+
+---
+
+## Reliability Judge
+
+### Input
+
+* Prediction
+* Agent results
+* Investigation evidence
+* Configuration thresholds
+
+### Output
+
+* TRUST / REVIEW / ABSTAIN
+* Trust score
+* Triggered rules
+* Evidence summary
+
+### Example Decision Rules
+
+The current decision framework can incorporate signals such as:
+
+* High confidence
+* Low uncertainty
+* Prediction stability
+* Explanation agreement
+
+Example thresholds:
+
+```text
+High confidence:        ≥ 0.85
+Low uncertainty:        ≤ 0.30
+Explanation agreement:  ≥ 0.40
+```
+
+The exact thresholds should be interpreted as configurable research parameters rather than clinically validated cutoffs.
+
+---
+
+# Configuration
+
+Reliability thresholds can be configured through the project configuration system.
+
+Example:
 
 ```yaml
 high_confidence_threshold: 0.85
-low_uncertainty_threshold: 0.3
-acceptable_flip_rate: 0.1
+low_uncertainty_threshold: 0.30
+acceptable_flip_rate: 0.10
 acceptable_confidence_delta: 0.15
-explanation_agreement_threshold: 0.4
+explanation_agreement_threshold: 0.40
 ```
 
----
-
-## API Endpoints
-
-### POST `/api/autopsy`
-**Comprehensive investigation**
-- Input: Medical image file
-- Output: Complete forensic report with all agent results
-
-### POST `/api/predict`
-**Quick prediction only**
-- Input: Medical image
-- Output: Prediction and confidence
-
-### POST `/api/explainability`
-**Visual explanations**
-- Input: Medical image
-- Output: Grad-CAM and Integrated Gradients
-
-### POST `/api/robustness`
-**Perturbation testing**
-- Input: Medical image
-- Output: All perturbation results and weakness analysis
-
-### POST `/api/uncertainty`
-**Uncertainty analysis**
-- Input: Medical image
-- Output: Multiple uncertainty metrics
-
-### GET `/api/config`
-**System configuration**
-- Output: Model info, classes, methods available
+These values are intended for experimentation and should not be interpreted as clinical thresholds.
 
 ---
 
-## Experimental Results
+# API
 
-### Prediction Accuracy
-Model: ResNet18 on brain tumor classification
-- Training data: Brain tumor dataset (4 classes)
-- Validation accuracy: ~85-90% (depends on dataset)
+## `POST /api/autopsy`
 
-### Robustness Testing
-Average confidence delta across perturbations:
-- Brightness: ±1-5%
-- Contrast: ±2-8%
-- Gaussian noise: ±5-15%
-- Blur: ±3-10%
-- Rotation: ±2-6%
+Runs a comprehensive investigation.
 
-### Uncertainty Correlation
-- High entropy correlates with low accuracy
-- Confidence gap indicates decision boundary proximity
-- Explanation agreement validates model reasoning
+**Input:** Medical image
+
+**Output:** Forensic investigation report.
 
 ---
 
-## Limitations
+## `POST /api/predict`
 
-### Research Prototype
-- **NOT for clinical deployment**
-- Demonstration and research purposes only
-- ResNet18 trained on ImageNet, not medical data
+Runs prediction only.
 
-### Model Limitations
-- Single CNN backbone (no ensemble)
-- No multimodal input (single 2D image)
-- No patient context or metadata
-- No temporal analysis
-- Limited to 4 tumor types
+**Input:** Medical image
 
-### Perturbation Testing
-- Synthetic perturbations ≠ real imaging artifacts
-- No domain-specific degradation
-- Limited to pixel-level transformations
-
-### Uncertainty Quantification
-- No Bayesian or ensemble uncertainty
-- Entropy alone doesn't guarantee calibration
-- Limited to model-intrinsic uncertainty
-
-### Causality Claims
-- Counterfactual analysis is **descriptive not causal**
-- Cannot infer clinical causality from computational changes
-- Perturbations don't represent real pathologies
+**Output:** Predicted class and confidence.
 
 ---
 
-## Research Contributions
+## `POST /api/explainability`
 
-### Medical AI Safety
-- Demonstrates practical explainability in medical context
-- Shows necessity of robustness assessment
-- Links confidence to reliability empirically
+Runs visual explanation analysis.
 
-### AI Reliability
-- Applies agent architecture to model auditing
-- Flight recorder concept from aircraft systems
-- Deterministic investigation without LLMs
+**Input:** Medical image
 
-### Interactive Visualization
-- Novel investigation graph interface
-- Evidence timeline for decision transparency
-- Research and demo modes for different audiences
+**Output:** Explainability results.
 
 ---
 
-## Future Work
+## `POST /api/robustness`
 
-### Short-term
-- [ ] PDF report export
-- [ ] Batch processing pipeline
-- [ ] Custom threshold configuration UI
-- [ ] Grad-CAM overlay on original image
+Runs perturbation analysis.
 
-### Medium-term
-- [ ] Database for case management
-- [ ] Authentication and user roles
-- [ ] Multi-image sequence analysis
-- [ ] Lesion mask input in UI
-- [ ] Performance metrics dashboard
+**Input:** Medical image
 
-### Long-term
-- [ ] Integration with hospital PACS
-- [ ] Real medical imaging datasets
-- [ ] Multimodal model support
-- [ ] Clinical validation studies
-- [ ] Deployment framework
+**Output:** Robustness and sensitivity results.
 
 ---
 
-## Files & Directory Structure
+## `POST /api/uncertainty`
 
-```
+Runs uncertainty analysis.
+
+**Input:** Medical image
+
+**Output:** Uncertainty metrics.
+
+---
+
+## `GET /api/config`
+
+Returns system configuration and available methods.
+
+---
+
+# Experimental Evaluation
+
+MEDAI BLACK BOX is designed as a research prototype for evaluating reliability signals around medical-image classification.
+
+Potential evaluation dimensions include:
+
+### Prediction Performance
+
+* Accuracy
+* Precision
+* Recall
+* F1-score
+* Per-class performance
+
+### Robustness
+
+* Prediction flip rate
+* Confidence delta
+* Perturbation sensitivity
+* Stability under transformations
+
+### Explainability
+
+* Explanation similarity
+* Region overlap
+* Attribution consistency
+
+### Uncertainty
+
+* Predictive entropy
+* Confidence gap
+* Calibration analysis
+
+### Reliability
+
+* TRUST / REVIEW / ABSTAIN distribution
+* Reliability score
+* Failure-mode frequency
+* Abstention behavior
+
+---
+
+# Limitations
+
+## Research Prototype
+
+MEDAI BLACK BOX is **not a clinical system**.
+
+It has not been validated for:
+
+* Clinical diagnosis
+* Patient management
+* Hospital deployment
+* Regulatory use
+
+---
+
+## Model Limitations
+
+* Single CNN backbone
+* No ensemble model
+* Single 2D image input
+* No patient metadata
+* No longitudinal information
+* Four-class classification scope
+
+---
+
+## Robustness Limitations
+
+Synthetic perturbations do not necessarily represent real-world medical imaging artifacts.
+
+For example:
+
+* Brightness changes are not equivalent to scanner variation
+* Gaussian noise is not equivalent to acquisition artifacts
+* Blur is not equivalent to all real imaging degradation
+
+---
+
+## Uncertainty Limitations
+
+The current system primarily uses model-output statistics.
+
+It does not provide full Bayesian or ensemble uncertainty.
+
+Entropy and confidence measures should therefore not be interpreted as guarantees of calibrated uncertainty.
+
+---
+
+## Causality Limitations
+
+Counterfactual and perturbation experiments are computational interventions.
+
+They do **not** establish clinical causality.
+
+Changes in a model's prediction after an image manipulation should be interpreted as evidence of computational sensitivity rather than proof of causal relationships.
+
+---
+
+# Research Contributions
+
+## Medical AI Reliability
+
+MEDAI BLACK BOX explores a framework for moving beyond prediction confidence toward evidence-based reliability assessment.
+
+## Explainable AI
+
+The system integrates multiple explanation techniques and evaluates their agreement.
+
+## Robustness Auditing
+
+Controlled perturbation testing exposes prediction instability and sensitivity.
+
+## Uncertainty Analysis
+
+Model-output uncertainty is incorporated into the reliability assessment.
+
+## Deterministic AI Auditing
+
+The investigation pipeline uses explicit computational modules and decision rules rather than relying on an external LLM to determine reliability.
+
+## AI Agent Observability
+
+The Agent Flight Recorder provides execution-level observability for the investigation components.
+
+## Interactive Forensic Interface
+
+The investigation graph and evidence timeline provide an interactive way to inspect how evidence contributes to the final assessment.
+
+---
+
+# Future Work
+
+## Short-Term
+
+* [ ] PDF investigation reports
+* [ ] Batch case processing
+* [ ] Configurable thresholds
+* [ ] Improved Grad-CAM overlays
+* [ ] Expanded automated testing
+
+## Medium-Term
+
+* [ ] Case database
+* [ ] Authentication and user roles
+* [ ] Multi-image sequence analysis
+* [ ] Lesion-mask input
+* [ ] Performance dashboard
+
+## Long-Term
+
+* [ ] Real-world medical imaging validation
+* [ ] Multimodal model support
+* [ ] Clinical validation studies
+* [ ] PACS integration research
+* [ ] Deployment and monitoring framework
+
+---
+
+# Project Structure
+
+```text
 medai-black-box/
+│
 ├── backend/
-│   └── main.py                 # FastAPI server
+│   └── main.py
+│
 ├── frontend/
 │   ├── app/
-│   │   ├── layout.tsx         # Root layout
-│   │   ├── page.tsx           # Landing page
-│   │   └── globals.css        # Global styles
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   └── globals.css
+│   │
 │   ├── components/
-│   │   ├── Investigation.tsx       # Main investigation interface
-│   │   ├── VerdictCard.tsx         # Verdict display
-│   │   ├── InvestigationGraph.tsx  # Investigation flow
-│   │   ├── EvidenceTimeline.tsx    # Evidence progression
-│   │   ├── PerturbationResults.tsx # Robustness data
-│   │   └── AgentFlightRecorder.tsx # Execution logs
+│   │   ├── Investigation.tsx
+│   │   ├── VerdictCard.tsx
+│   │   ├── InvestigationGraph.tsx
+│   │   ├── EvidenceTimeline.tsx
+│   │   ├── PerturbationResults.tsx
+│   │   └── AgentFlightRecorder.tsx
+│   │
 │   └── next.config.js
+│
 ├── models/
-│   └── brain_tumor_model.py    # ResNet18 brain tumor classifier
+│   └── brain_tumor_model.py
+│
 ├── explainability/
-│   ├── gradcam.py              # Grad-CAM and Integrated Gradients
-│   └── robustness.py           # Perturbation testing
+│   ├── gradcam.py
+│   └── robustness.py
+│
 ├── agents/
-│   └── investigation_agents.py # Investigation modules
-├── experiments/                 # Experiment scripts
-├── tests/                       # Test suite
-├── configs/                     # Configuration files
-├── demo_cases/                  # Example cases
-├── data/                        # Dataset management
+│   └── investigation_agents.py
+│
+├── experiments/
+├── tests/
+├── configs/
+├── demo_cases/
+├── data/
+├── assets/
+│   └── screenshots/
+│       ├── screenshot-landing.png
+│       ├── screenshot-running.png
+│       ├── screenshot-investigation.png
+│       └── screenshot-evidence-timeline.png
+│
+├── requirements.txt
 └── README.md
 ```
 
 ---
 
-## Testing
+# Testing
 
-### Backend Unit Tests
+## Backend Tests
+
 ```bash
-cd medai-black-box
 python -m pytest tests/
 ```
 
-### Manual API Testing
+## API Health Check
+
 ```bash
-# Quick prediction
-curl -X POST -F "file=@image.png" http://localhost:8000/api/predict
-
-# Full autopsy
-curl -X POST -F "file=@image.png" http://localhost:8000/api/autopsy > autopsy.json
-```
-
-### Frontend Testing
-```bash
-cd frontend
-npm test
-```
-
----
-
-## Troubleshooting
-
-### Backend won't start
-```bash
-# Clear old process
-pkill -f "python backend/main.py"
-
-# Check logs
-tail -50 backend.log
-
-# Reinstall dependencies
-pip install -r requirements.txt --force-reinstall
-```
-
-### Frontend won't connect to backend
-```bash
-# Ensure backend is running on port 8000
 curl http://localhost:8000/health
-
-# Check CORS settings in backend/main.py
-# Verify frontend API URL in components/Investigation.tsx
 ```
 
-### Model inference slow
-- Verify CPU/GPU availability: `python -c "import torch; print(torch.cuda.is_available())"`
-- Reduce image size to 224x224
-- Use smaller model or batch process
+## Prediction
+
+```bash
+curl -X POST \
+  -F "file=@image.png" \
+  http://localhost:8000/api/predict
+```
+
+## Full Investigation
+
+```bash
+curl -X POST \
+  -F "file=@image.png" \
+  http://localhost:8000/api/autopsy
+```
 
 ---
 
-## Citation & Attribution
+# Troubleshooting
 
-### Dependencies
-- FastAPI - Tiangano Girardi
-- PyTorch - Meta AI
-- Next.js - Vercel
-- Tailwind CSS - Tailwind Labs
+## Backend Does Not Start
 
-### Methodologies
-- Grad-CAM: Selvaraju et al., 2019
-- Integrated Gradients: Sundararajan et al., 2017
-- Uncertainty Quantification: Lakshminarayanan et al., 2017
+Check that the virtual environment is active:
 
----
+### Windows
 
-## License
+```powershell
+.\venv\Scripts\Activate.ps1
+```
 
-Research use only. Not for medical deployment.
+Then:
 
----
-
-## Contact & Contributions
-
-**Author**: [Your Name]  
-**Institution**: [Your Institution]  
-**Research Focus**: 
-- Medical Computer Vision
-- Explainable AI  
-- AI Model Reliability
-- Trustworthy AI Systems
-
-For questions or contributions, contact: [email]
+```powershell
+python backend/main.py
+```
 
 ---
 
-## Disclaimer
+## Frontend Cannot Connect to Backend
 
-⚠️ **RESEARCH PROTOTYPE ONLY**
+Verify that the backend is running:
 
-This system is not validated for clinical use. It does not provide medical diagnoses and should not be used for patient care decisions. All predictions are for research demonstration only.
+```text
+http://localhost:8000/health
+```
 
-**Never rely on this system for actual medical decisions.**
+Then verify the API URL used by the frontend.
 
 ---
 
-**Last Updated**: August 2026  
-**Status**: Active Development  
-**Version**: 1.0.0 MVP
-#
+## Slow Inference
+
+Check whether CUDA is available:
+
+```bash
+python -c "import torch; print(torch.cuda.is_available())"
+```
+
+On CPU-only systems, inference and perturbation analysis may take longer.
+
+---
+
+# Methodological References
+
+### Grad-CAM
+
+Selvaraju et al., *Grad-CAM: Visual Explanations from Deep Networks via Gradient-Based Localization*, 2019.
+
+### Integrated Gradients
+
+Sundararajan et al., *Axiomatic Attribution for Deep Networks*, 2017.
+
+### Uncertainty
+
+Lakshminarayanan et al., *Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles*, 2017.
+
+---
+
+# License
+
+Research use only.
+
+This repository is intended for research and educational purposes and is **not approved for clinical deployment**.
+
+---
+
+# Author
+
+**Iqra Safdar**
+
+**COMSATS University Islamabad — Sahiwal Campus**
+
+### Research Areas
+
+* Medical Computer Vision
+* Explainable AI
+* AI Model Reliability
+* Trustworthy AI
+* Medical AI Safety
+
+---
+
+# Disclaimer
+
+> **RESEARCH PROTOTYPE ONLY**
+
+MEDAI BLACK BOX is not a medical diagnostic system and has not been validated for clinical use.
+
+It does not provide medical diagnoses and must not be used to make patient-care decisions.
+
+All predictions, explanations, robustness measurements, and reliability verdicts are intended for **research and demonstration purposes only**.
+
+---
+
+**Last Updated:** August 2026
+**Status:** Active Development
+**Version:** 1.0.0 MVP
