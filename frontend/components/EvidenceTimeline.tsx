@@ -7,7 +7,9 @@ interface EvidenceTimelineProps {
 export default function EvidenceTimeline({ result }: EvidenceTimelineProps) {
   const prediction = result.prediction;
   const uncertainty = result.investigation.uncertainty_investigator.output_summary;
-  const robustness = result.investigation.robustness_investigator.output_summary;
+  const robustnessAgent = result.investigation.robustness_investigator;
+  const robustnessOk = robustnessAgent?.status === 'SUCCESS';
+  const robustness = robustnessOk ? robustnessAgent.output_summary : null;
 
   const stages = [
     {
@@ -24,9 +26,10 @@ export default function EvidenceTimeline({ result }: EvidenceTimelineProps) {
     },
     {
       name: 'Robustness Test',
-      value: `${robustness.prediction_flips} flips`,
-      confidence: `Δ${(robustness.max_confidence_delta * 100).toFixed(1)}%`,
-      color: uncertainty.uncertainty_level === 'HIGH' ? 'from-yellow-500 to-orange-500' : 'from-green-500 to-emerald-500'
+      value: robustnessOk ? `${robustness.prediction_flips} flips` : 'Unavailable',
+      confidence: robustnessOk ? `Δ${(robustness.max_confidence_delta * 100).toFixed(1)}%` : 'FAILED',
+      color: !robustnessOk ? 'from-red-500 to-pink-500' :
+             uncertainty.uncertainty_level === 'HIGH' ? 'from-yellow-500 to-orange-500' : 'from-green-500 to-emerald-500'
     },
     {
       name: 'Uncertainty Check',

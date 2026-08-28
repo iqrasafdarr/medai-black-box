@@ -10,8 +10,11 @@ export default function PerturbationResults({ result }: PerturbationResultsProps
   if (robustness.status !== 'SUCCESS') {
     return (
       <div className="glass-card p-8 text-gray-400">
-        Robustness analysis failed or unavailable
-      </div>
+        <p className="text-red-400 font-semibold mb-2">Robustness analysis failed or unavailable</p>
+        {robustness.error && (
+          <p className="text-sm text-gray-500 font-mono">{robustness.error}</p>
+        )}
+      </div>z
     );
   }
 
